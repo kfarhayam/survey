@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סקר דיירים | כפר הים 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Heebo', sans-serif; background: linear-gradient(135deg, #0a3d5c 0%, #1a6b8a 50%, #0d8f8f 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .card { background: white; border-radius: 20px; max-width: 680px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+  .header { background: linear-gradient(135deg, #0a3d5c, #1a6b8a); color: white; padding: 28px 32px 20px; }
+  .logo-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .logo-text { font-size: 22px; font-weight: 800; }
+  .lang-buttons { display: flex; gap: 8px; }
+  .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 13px; font-family: 'Heebo', sans-serif; transition: all 0.2s; }
+  .lang-btn.active, .lang-btn:hover { background: rgba(255,255,255,0.9); color: #0a3d5c; }
+  .header h1 { font-size: 18px; font-weight: 600; opacity: 0.95; }
+  .header-sub { font-size: 13px; opacity: 0.85; margin-top: 6px; line-height: 1.6; }
+  .progress-wrap { background: rgba(255,255,255,0.15); border-radius: 10px; height: 6px; margin-top: 16px; overflow: hidden; }
+  .progress-bar { background: #4dd9c0; height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+  .progress-label { font-size: 12px; opacity: 0.75; margin-top: 5px; }
+  .body { padding: 32px; }
+  .step { display: none; }
+  .step.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .step-label { font-size: 11px; color: #1a6b8a; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .question { font-size: 18px; font-weight: 700; color: #0a3d5c; margin-bottom: 6px; line-height: 1.5; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 18px; line-height: 1.6; }
+  .info-box { font-size: 13px; color: #444; margin-bottom: 16px; line-height: 1.7; background: #f0f7ff; padding: 14px 16px; border-radius: 10px; border-right: 3px solid #1a6b8a; }
+  .privacy-note { font-size: 12px; color: #888; margin-top: 4px; font-style: italic; }
+  .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+  .option { border: 2px solid #e0e8f0; border-radius: 12px; padding: 13px 16px; cursor: pointer; transition: all 0.2s; font-size: 15px; color: #333; display: flex; align-items: center; gap: 12px; line-height: 1.4; }
+  .option:hover { border-color: #1a6b8a; background: #f0f8ff; }
+  .option.selected { border-color: #1a6b8a; background: #e8f4ff; color: #0a3d5c; font-weight: 500; }
+  .option .check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .option.selected .check { background: #1a6b8a; border-color: #1a6b8a; }
+  .option.selected .check::after { content: 'V'; color: white; font-size: 12px; font-weight: bold; }
+  .option.multi .check { border-radius: 5px; }
+  .multi-note { font-size: 12px; color: #888; margin-bottom: 12px; }
+  textarea, .text-input { width: 100%; border: 2px solid #e0e8f0; border-radius: 12px; padding: 13px 16px; font-size: 15px; font-family: 'Heebo', sans-serif; direction: rtl; outline: none; transition: border-color 0.2s; }
+  textarea { resize: vertical; min-height: 90px; margin-bottom: 28px; }
+  textarea:focus, .text-input:focus { border-color: #1a6b8a; }
+  .char-count { font-size: 12px; color: #aaa; text-align: left; margin-top: 4px; margin-bottom: 8px; }
+  .nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .btn { padding: 13px 28px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Heebo', sans-serif; transition: all 0.2s; }
+  .btn-next { background: linear-gradient(135deg, #1a6b8a, #0d8f8f); color: white; flex: 1; }
+  .btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-back { background: #f0f4f8; color: #666; padding: 13px 20px; }
+  .btn-back:hover { background: #e0e8f0; }
+  .section-intro { background: linear-gradient(135deg, #f0f8ff, #e8f4ff); border-radius: 14px; padding: 24px; margin-bottom: 24px; text-align: center; border: 1px solid #cce0f0; }
+  .section-intro .icon { font-size: 40px; margin-bottom: 10px; }
+  .section-intro h2 { color: #0a3d5c; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .section-intro p { color: #555; font-size: 14px; line-height: 1.7; }
+  .field-group { margin-bottom: 18px; }
+  .field-label { font-size: 14px; font-weight: 600; color: #0a3d5c; margin-bottom: 8px; }
+  .verify-toggle { display: flex; gap: 10px; margin-bottom: 14px; }
+  .verify-tab { flex: 1; padding: 10px; border: 2px solid #e0e8f0; border-radius: 10px; text-align: center; cursor: pointer; font-size: 14px; font-family: 'Heebo', sans-serif; color: #555; transition: all 0.2s; font-weight: 500; }
+  .verify-tab.active { border-color: #1a6b8a; background: #e8f4ff; color: #0a3d5c; }
+  .verify-field { display: none; }
+  .verify-field.active { display: block; }
+  .rank-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+  .rank-item { border: 2px solid #e0e8f0; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: grab; background: white; transition: all 0.2s; user-select: none; }
+  .rank-item:hover { border-color: #1a6b8a; background: #f0f8ff; }
+  .rank-item.dragging { opacity: 0.4; }
+  .rank-num { width: 26px; height: 26px; border-radius: 50%; background: #1a6b8a; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .rank-text { font-size: 14px; color: #333; flex: 1; }
+  .rank-handle { color: #ccc; font-size: 18px; }
+  .rank-note { font-size: 12px; color: #888; margin-bottom: 10px; }
+  .thank-you { text-align: center; padding: 16px 0; }
+  .thank-you .big-check { width: 80px; height: 80px; background: linear-gradient(135deg, #1a6b8a, #0d8f8f); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; color: white; }
+  .thank-you h2 { color: #0a3d5c; font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+  .thank-you p { color: #555; font-size: 15px; line-height: 1.7; margin-bottom: 16px; }
+  .lottery-box { background: #fff8e8; border: 2px solid #f0c040; border-radius: 14px; padding: 20px; margin: 16px 0; text-align: center; }
+  .lottery-box h3 { color: #885500; font-size: 16px; margin-bottom: 8px; }
+  .lottery-box p { color: #885500; font-size: 13px; margin-bottom: 14px; line-height: 1.6; }
+  .lottery-input { width: 100%; border: 2px solid #f0c040; border-radius: 8px; padding: 12px; font-size: 15px; text-align: center; outline: none; font-family: 'Heebo', sans-serif; background: white; }
+  .lottery-note { font-size: 11px; color: #aaa; margin-top: 8px; }
+  .short-textarea { min-height: 52px !important; height: 52px; }
+  @media (max-width: 500px) { .body { padding: 20px; } .header { padding: 20px; } .question { font-size: 16px; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-text">כפר הים</div>
+      <div class="lang-buttons">
+        <button class="lang-btn active" onclick="setLang('he')">עב</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+      </div>
+    </div>
+    <h1>סקר דיירים | תוכנית ההתחדשות 2026</h1>
+    <p class="header-sub">התשובות יעזרו להנהלת המתחם והדירקטוריון לקבל החלטות המבוססות על הרצון שלכם. הסקר אורך כ-5 דקות.</p>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+
+  <div class="body">
+
+    <!-- STEP 0: Intro -->
+    <div class="step active" id="step-0">
+      <div class="section-intro">
+        <div class="icon">🏗️</div>
+        <h2>ברוכים הבאים</h2>
+        <p>לקראת גיבוש תוכנית עבודה רב-שנתית למתחם, מתקיים תהליך מיפוי צרכים ותעדוף. לפני קבלת החלטות, חשוב לנו לשמוע אתכם.</p>
+      </div>
+      <div class="nav">
+        <button class="btn btn-next" onclick="nextStep()">בואו נתחיל</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: ID -->
+    <div class="step" id="step-1">
+      <div class="step-label">זיהוי</div>
+      <div class="info-box">כדי למנוע השפעה זרה ומניעת מענה כפול, אנו מבקשים פרטי אימות. <strong>דירה אחת — מענה אחד.</strong></div>
+      <p class="privacy-note" style="margin-bottom:16px">הנתונים נועדו למניעת מענה כפול בלבד ולא יוצגו בפרסום התוצאות.</p>
+      <div id="dup-msg" style="display:none; background:#fff0f0; border:2px solid #f08080; border-radius:12px; padding:16px; margin-bottom:16px; color:#c00; font-size:14px; line-height:1.6;">מדירה זו כבר התקבל מענה. ניתן לפנות להנהלת המתחם לבירור.</div>
+      <div class="field-group">
+        <div class="field-label">מספר דירה / יחידה</div>
+        <input type="text" class="text-input" id="apt-input" placeholder="לדוגמה: 3-42" oninput="checkStep1()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">פרט אימות — בחר אחד:</div>
+        <div class="verify-toggle">
+          <div class="verify-tab active" id="tab-card" onclick="switchVerify('card')">מספר כרטיס כניסה</div>
+          <div class="verify-tab" id="tab-dob" onclick="switchVerify('dob')">תאריך לידה</div>
+        </div>
+        <div class="verify-field active" id="field-card">
+          <input type="text" class="text-input" id="card-input" placeholder="6 ספרות — שורה שלישית בכרטיס הדייר" maxlength="6" oninput="checkStep1()">
+        </div>
+        <div class="verify-field" id="field-dob">
+          <input type="text" class="text-input" id="dob-input" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDob(); checkStep1()">
+        </div>
+      </div>
+      <div class="nav">
+        <button class="btn btn-back" onclick="prevStep()">חזרה</button>
+        <button class="btn btn-next" id="btn-1" disabled onclick="nextStep()">המשך</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step-2">
+      <div class="step-label">חלק א — מי אתה</div>
+      <div class="question">מהו הקשר שלך לנכס במתחם?</div>
+      <div class="options" id="opts-2">
+        <div class="option" data-val="owner_resident" onclick="selectSingle(this,2)"><span class="check"></span>בעל דירה המתגורר קבוע</div>
+        <div class="option" data-val="owner_partial" onclick="selectSingle(this,2)"><span class="check"></span>בעל דירה המתגורר חלקית / דירת נופש</div>
+        <div class="option" data-val="owner_renting" onclick="selectSingle(this,2)"><span class="check"></span>בעל דירה המשכיר את הנכס</div>
+        <div class="option" data-val="tenant" onclick="selectSingle(this,2)"><span class="check"></span>שוכר המתגורר במתחם</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-2" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step-3">
+      <div class="step-label">חלק א — מי אתה</div>
+      <div class="question">כמה שנים אתה קשור למתחם?</div>
+      <div class="options" id="opts-3">
+        <div class="option" data-val="0to4" onclick="selectSingle(this,3)"><span class="check"></span>0–4 שנים</div>
+        <div class="option" data-val="5to9" onclick="selectSingle(this,3)"><span class="check"></span>5–9 שנים</div>
+        <div class="option" data-val="10to19" onclick="selectSingle(this,3)"><span class="check"></span>10–19 שנים</div>
+        <div class="option" data-val="20plus" onclick="selectSingle(this,3)"><span class="check"></span>20 שנה ומעלה</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-3" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" id="step-4">
+      <div class="step-label">חלק א — מי אתה</div>
+      <div class="question">מה טווח הגיל שלך?</div>
+      <div class="options" id="opts-4">
+        <div class="option" data-val="under35" onclick="selectSingle(this,4)"><span class="check"></span>עד 35</div>
+        <div class="option" data-val="36to49" onclick="selectSingle(this,4)"><span class="check"></span>36–49</div>
+        <div class="option" data-val="50to64" onclick="selectSingle(this,4)"><span class="check"></span>50–64</div>
+        <div class="option" data-val="65to74" onclick="selectSingle(this,4)"><span class="check"></span>65–74</div>
+        <div class="option" data-val="75plus" onclick="selectSingle(this,4)"><span class="check"></span>75 ומעלה</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-4" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="step-5">
+      <div class="step-label">חלק א — מי אתה</div>
+      <div class="question">כמה נפשות מתגוררות בנכס?</div>
+      <div class="options" id="opts-5">
+        <div class="option" data-val="1" onclick="selectSingle(this,5)"><span class="check"></span>1</div>
+        <div class="option" data-val="2" onclick="selectSingle(this,5)"><span class="check"></span>2</div>
+        <div class="option" data-val="3to4" onclick="selectSingle(this,5)"><span class="check"></span>3–4</div>
+        <div class="option" data-val="5plus" onclick="selectSingle(this,5)"><span class="check"></span>5 ומעלה</div>
+        <div class="option" data-val="na" onclick="selectSingle(this,5)"><span class="check"></span>לא רלוונטי (לא מתגורר)</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-5" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION B -->
+    <div class="step" id="step-5b">
+      <div class="section-intro"><div class="icon">🏠</div><h2>חלק ב — תפיסת הנכס</h2><p>נרצה להבין כיצד אתה רואה את הנכס שלך ומה חשוב לך לטווח הארוך.</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step" id="step-6">
+      <div class="step-label">חלק ב — תפיסת הנכס</div>
+      <div class="question">כיצד אתה רואה את הנכס שלך במתחם?</div>
+      <div class="options" id="opts-6">
+        <div class="option" data-val="main_home" onclick="selectSingle(this,6)"><span class="check"></span>מגורים עיקריים</div>
+        <div class="option" data-val="investment" onclick="selectSingle(this,6)"><span class="check"></span>נכס השקעה</div>
+        <div class="option" data-val="vacation" onclick="selectSingle(this,6)"><span class="check"></span>דירת נופש</div>
+        <div class="option" data-val="combo" onclick="selectSingle(this,6)"><span class="check"></span>שילוב של כמה מהאמור</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-6" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 7: Ranking -->
+    <div class="step" id="step-7">
+      <div class="step-label">חלק ב — תפיסת הנכס</div>
+      <div class="question">מה חשוב לך בטווח הארוך?</div>
+      <p class="rank-note">גרור את הפריטים לסדר העדיפויות שלך. 3 הראשונים ייחשבו.</p>
+      <div class="rank-list" id="rank-list">
+        <div class="rank-item" draggable="true" data-val="value"><span class="rank-num">1</span><span class="rank-text">השבחת ערך הנכס</span><span class="rank-handle">⠿</span></div>
+        <div class="rank-item" draggable="true" data-val="appearance"><span class="rank-num">2</span><span class="rank-text">נראות מכובדת ויוקרתית</span><span class="rank-handle">⠿</span></div>
+        <div class="rank-item" draggable="true" data-val="maintenance"><span class="rank-num">3</span><span class="rank-text">תחזוקה תקינה ובטוחה</span><span class="rank-handle">⠿</span></div>
+        <div class="rank-item" draggable="true" data-val="community"><span class="rank-num">4</span><span class="rank-text">חיי קהילה</span><span class="rank-handle">⠿</span></div>
+        <div class="rank-item" draggable="true" data-val="low_cost"><span class="rank-num">5</span><span class="rank-text">שמירה על הוצאות נמוכות</span><span class="rank-handle">⠿</span></div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="saveRanking(); nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step" id="step-8">
+      <div class="step-label">חלק ב — תפיסת הנכס</div>
+      <div class="question">האם לדעתך המתחם זקוק לתוכנית התחדשות רב-שנתית?</div>
+      <div class="options" id="opts-8">
+        <div class="option" data-val="yes" onclick="selectSingle(this,8)"><span class="check"></span>כן בהחלט</div>
+        <div class="option" data-val="yes_minimal" onclick="selectSingle(this,8)"><span class="check"></span>כן, אבל בצורה מדורגת ומינימלית</div>
+        <div class="option" data-val="no" onclick="selectSingle(this,8)"><span class="check"></span>לא בשלב זה</div>
+        <div class="option" data-val="unsure" onclick="selectSingle(this,8)"><span class="check"></span>לא יודע / לא בטוח</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-8" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION C -->
+    <div class="step" id="step-8b">
+      <div class="section-intro"><div class="icon">🏊</div><h2>חלק ג — הבריכה החיצונית</h2><p>הבריכה החיצונית לא נפתחה בעקבות דרישות רגולטוריות. עלות השיקום המשוערת היא 4,500–7,000 ₪ לדירה לפי שטח, והיא תחול על בעלי הדירות.</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 9 -->
+    <div class="step" id="step-9">
+      <div class="step-label">חלק ג — הבריכה</div>
+      <div class="question">מה עמדתך לגבי שיקום הבריכה החיצונית?</div>
+      <div class="options" id="opts-9">
+        <div class="option" data-val="asap_payment" onclick="selectSingle(this,9)"><span class="check"></span>לקדם שיקום לקיץ הקרוב, בגבייה מיוחדת מבעלי המניות (דירות + מלון) בפריסה של מספר תשלומים</div>
+        <div class="option" data-val="after_hotel" onclick="selectSingle(this,9)"><span class="check"></span>לקדם שיקום רק לאחר הסדרת השתתפות המלון במימון</div>
+        <div class="option" data-val="delay" onclick="selectSingle(this,9)"><span class="check"></span>לדחות לעונה הבאה ולהתמקד בפרויקטים אחרים</div>
+        <div class="option" data-val="oppose" onclick="selectSingle(this,9)"><span class="check"></span>איני תומך בשיקום הבריכה בעת הזו</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-9" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 10 -->
+    <div class="step" id="step-10">
+      <div class="step-label">חלק ג — הבריכה</div>
+      <div class="question">מה עמדתך לגבי הפעלת שתי הבריכות כל עוד המלון אינו משתתף במימון?</div>
+      <div class="options" id="opts-10">
+        <div class="option" data-val="close_both" onclick="selectSingle(this,10)"><span class="check"></span>לסגור את שתיהן עד להסדרת תשלום המלון</div>
+        <div class="option" data-val="keep_indoor" onclick="selectSingle(this,10)"><span class="check"></span>להפעיל רק את הפנימית</div>
+        <div class="option" data-val="open_both" onclick="selectSingle(this,10)"><span class="check"></span>להפעיל את שתיהן (בגבייה מיוחדת לשיקום החיצונית)</div>
+        <div class="option" data-val="no_opinion" onclick="selectSingle(this,10)"><span class="check"></span>אין לי עמדה ברורה</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-10" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION D -->
+    <div class="step" id="step-10b">
+      <div class="section-intro"><div class="icon">🔧</div><h2>חלק ד — תעדוף פרויקטים</h2><p>הפרויקטים הבאים הם חובה רגולטורית ובטיחותית ויבוצעו בכל מקרה: שיקום לוחות חשמל, שיקום חיפויי חזית בניינים 2–5.<br><br>להלן הפרויקטים הנתונים לתעדוף:</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 11 -->
+    <div class="step" id="step-11">
+      <div class="step-label">חלק ד — תעדוף</div>
+      <div class="question">אילו פרויקטים חשובים לך במיוחד?</div>
+      <p class="multi-note">בחר עד 3</p>
+      <div class="options" id="opts-11">
+        <div class="option multi" data-val="pool_outdoor" onclick="selectMulti(this,11,3)"><span class="check"></span>שיקום הבריכה החיצונית לפי דרישות משרד הבריאות</div>
+        <div class="option multi" data-val="pool_area" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ סביבת הבריכה החיצונית והמלתחות</div>
+        <div class="option multi" data-val="elevators" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ / החלפת מעליות</div>
+        <div class="option multi" data-val="corridors" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ מסדרונות למראה חדשני</div>
+        <div class="option multi" data-val="entrances" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ הכניסות לבניינים והמעברים בקומות המפולשות</div>
+        <div class="option multi" data-val="parking" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ נראות החניונים והכניסות לבניינים מהחניונים</div>
+        <div class="option multi" data-val="pool_indoor" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ הבריכה הפנימית וספא</div>
+        <div class="option multi" data-val="gym" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ חדר כושר</div>
+        <div class="option multi" data-val="gates" onclick="selectMulti(this,11,3)"><span class="check"></span>שיפוץ / החלפת שערים ובקרי כניסה למערכות מעודכנות</div>
+        <div class="option multi" data-val="licensing" onclick="selectMulti(this,11,3)"><span class="check"></span>השקעה ברישוי ושיווק שטחים שאינם בשימוש להשכרה</div>
+        <div class="option multi" data-val="bridge" onclick="selectMulti(this,11,3)"><span class="check"></span>בניית גשר בין בניין 1 לבניין 2</div>
+        <div class="option multi" data-val="other_proj" onclick="selectMultiWithOther(this,11,3)"><span class="check"></span>אחר</div>
+      </div>
+      <div id="other-proj-wrap" style="display:none; margin-top:8px; margin-bottom:4px;">
+        <input type="text" class="text-input" id="other-proj-text" placeholder="פרט בקצרה (עד 4 מילים)" maxlength="40">
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-11" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 12 -->
+    <div class="step" id="step-12">
+      <div class="step-label">חלק ד — מצב נוכחי</div>
+      <div class="question">מה מפריע לך הכי הרבה במתחם כיום?</div>
+      <p class="multi-note">בחר עד 3</p>
+      <div class="options" id="opts-12">
+        <div class="option multi" data-val="pool_outdoor" onclick="selectMulti(this,12,3)"><span class="check"></span>אי פעילות הבריכה החיצונית</div>
+        <div class="option multi" data-val="pool_indoor" onclick="selectMulti(this,12,3)"><span class="check"></span>תחזוקת הבריכה הפנימית</div>
+        <div class="option multi" data-val="corridors" onclick="selectMulti(this,12,3)"><span class="check"></span>נראות המסדרונות</div>
+        <div class="option multi" data-val="elevators" onclick="selectMulti(this,12,3)"><span class="check"></span>תקינות המעליות</div>
+        <div class="option multi" data-val="facade" onclick="selectMulti(this,12,3)"><span class="check"></span>נראות חזיתות הבניינים</div>
+        <div class="option multi" data-val="gates" onclick="selectMulti(this,12,3)"><span class="check"></span>תקינות ונראות השערים</div>
+        <div class="option multi" data-val="maintenance" onclick="selectMulti(this,12,3)"><span class="check"></span>ניקיון ותחזוקה שוטפת של המסדרונות</div>
+        <div class="option multi" data-val="parking_look" onclick="selectMulti(this,12,3)"><span class="check"></span>נראות החניונים, הכניסות והמעברים</div>
+        <div class="option multi" data-val="nothing" onclick="selectOnlyThis(this,12)"><span class="check"></span>אין תלונות מיוחדות</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-12" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 13 -->
+    <div class="step" id="step-13">
+      <div class="step-label">חלק ד — מודעות</div>
+      <div class="question">עד כמה היית מעודכן שהפרויקטים הבאים כבר מבוצעים?</div>
+      <p class="multi-note">סמן את מה שידעת לפני מילוי הסקר</p>
+      <div class="options" id="opts-13">
+        <div class="option multi" data-val="knew_electric" onclick="selectMultiUnlimited(this,13)"><span class="check"></span>שיקום לוחות החשמל (85 לוחות במתחם)</div>
+        <div class="option multi" data-val="knew_facade" onclick="selectMultiUnlimited(this,13)"><span class="check"></span>שיקום חיפויי חזית בניינים 2–5</div>
+        <div class="option multi" data-val="knew_none" onclick="selectOnlyThis(this,13)"><span class="check"></span>לא ידעתי על אף אחד מהם</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-13" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION E -->
+    <div class="step" id="step-13b">
+      <div class="section-intro"><div class="icon">💰</div><h2>חלק ה — תקציב ומימון</h2><p>שאלות אלו נועדו להבין העדפות לפריסה ותכנון כלכלי בלבד, ואינן מהוות החלטה על שינוי תשלום.</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 14 -->
+    <div class="step" id="step-14">
+      <div class="step-label">חלק ה — תקציב</div>
+      <div class="question">תוכנית ההתחדשות כוללת פרויקטים רבים שייבחנו ויתועדפו על ידי ועדת ההתחדשות. לצורך ביצועם, ייתכן שתידרש גבייה מיוחדת מעבר לדמי הניהול השוטפים. מה מודל הגבייה שתעדיף?</div>
+      <div class="options" id="opts-14">
+        <div class="option" data-val="one_time" onclick="selectSingle(this,14)"><span class="check"></span>תשלום חד פעמי בעת אישור הפרויקט, עם הנחה למשלמים מוקדם</div>
+        <div class="option" data-val="3_annual" onclick="selectSingle(this,14)"><span class="check"></span>פריסה ל-3 תשלומים שנתיים</div>
+        <div class="option" data-val="monthly" onclick="selectSingle(this,14)"><span class="check"></span>פריסה לתשלומים חודשיים על פני מספר שנים</div>
+        <div class="option" data-val="mgmt_fee" onclick="selectSingle(this,14)"><span class="check"></span>שילוב הדרגתי בדמי הניהול החודשיים</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-14" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION F -->
+    <div class="step" id="step-14b">
+      <div class="section-intro"><div class="icon">🤝</div><h2>חלק ו — תקשורת ומעורבות</h2><p>שאלות אחרונות על תקשורת ומעורבות.</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 15 -->
+    <div class="step" id="step-15">
+      <div class="step-label">חלק ו — תקשורת</div>
+      <div class="question">באיזה ערוץ תקשורת אתה מעדיף לקבל עדכונים?</div>
+      <p class="multi-note">אפשר לבחור יותר מאחד</p>
+      <div class="options" id="opts-15">
+        <div class="option multi" data-val="email" onclick="selectMultiUnlimited(this,15)"><span class="check"></span>מייל</div>
+        <div class="option multi" data-val="whatsapp" onclick="selectMultiUnlimited(this,15)"><span class="check"></span>וואטסאפ</div>
+        <div class="option multi" data-val="meetings" onclick="selectMultiUnlimited(this,15)"><span class="check"></span>אסיפות דיירים</div>
+        <div class="option multi" data-val="notice_board" onclick="selectMultiUnlimited(this,15)"><span class="check"></span>לוח מודעות פיזי במתחם</div>
+        <div class="option multi" data-val="portal" onclick="selectMultiUnlimited(this,15)"><span class="check"></span>אתר / פורטל דיירים</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-15" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 16 -->
+    <div class="step" id="step-16">
+      <div class="step-label">חלק ו — מעורבות</div>
+      <div class="question">האם היית מעוניין לקחת חלק ביוזמות של המתחם?</div>
+      <p class="subtitle">לדוגמה: ועדות, יוזמות חברתיות, שיפור פני הכפר וכד׳</p>
+      <div class="options" id="opts-16">
+        <div class="option" data-val="yes_active" onclick="selectSingle(this,16)"><span class="check"></span>כן, אשמח להיות מעורב</div>
+        <div class="option" data-val="maybe" onclick="selectSingle(this,16)"><span class="check"></span>אולי — תלוי בהיקף המחויבות</div>
+        <div class="option" data-val="no" onclick="selectSingle(this,16)"><span class="check"></span>לא בשלב זה</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-16" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- SECTION G -->
+    <div class="step" id="step-16b">
+      <div class="section-intro"><div class="icon">⭐</div><h2>חלק ז — שביעות רצון ומיקוד</h2><p>שתי שאלות אחרונות שיעזרו לנו למקד את סדר העדיפויות.</p></div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 17 -->
+    <div class="step" id="step-17">
+      <div class="step-label">חלק ז — שביעות רצון</div>
+      <div class="question">באופן כללי, עד כמה אתה מרוצה ממצב המתחם כיום?</div>
+      <div class="options" id="opts-17">
+        <div class="option" data-val="very_satisfied" onclick="selectSingle(this,17)"><span class="check"></span>מרוצה מאוד</div>
+        <div class="option" data-val="satisfied" onclick="selectSingle(this,17)"><span class="check"></span>מרוצה</div>
+        <div class="option" data-val="neutral" onclick="selectSingle(this,17)"><span class="check"></span>בינוני</div>
+        <div class="option" data-val="unsatisfied" onclick="selectSingle(this,17)"><span class="check"></span>לא מרוצה</div>
+        <div class="option" data-val="very_unsatisfied" onclick="selectSingle(this,17)"><span class="check"></span>מאוד לא מרוצה</div>
+      </div>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" id="btn-17" disabled onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 18 -->
+    <div class="step" id="step-18">
+      <div class="step-label">חלק ז — מיקוד</div>
+      <div class="question">אם היה ניתן לשפר דבר אחד בלבד במתחם בשנה הקרובה — מה היה הדבר החשוב ביותר מבחינתך?</div>
+      <textarea id="one-thing" class="short-textarea" placeholder="כתוב כאן..." maxlength="200" oninput="document.getElementById('cc18').textContent=this.value.length+' / 200'"></textarea>
+      <div class="char-count" id="cc18">0 / 200</div>
+      <p class="privacy-note" style="margin-bottom:24px;">התשובה תסייע למקד את סדר העדיפויות ולא תחליף הליכי החלטה.</p>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="nextStep()">המשך</button></div>
+    </div>
+
+    <!-- STEP 19 -->
+    <div class="step" id="step-19">
+      <div class="step-label">הערות</div>
+      <div class="question">יש לך הערות נוספות?</div>
+      <textarea id="open-text" placeholder="כתוב כאן... (אופציונלי)"></textarea>
+      <div class="nav"><button class="btn btn-back" onclick="prevStep()">חזרה</button><button class="btn btn-next" onclick="submitSurvey()">שלח את הסקר</button></div>
+    </div>
+
+    <!-- DONE -->
+    <div class="step" id="step-done">
+      <div class="thank-you">
+        <div class="big-check">✓</div>
+        <h2>תודה רבה!</h2>
+        <p>תשובותיך נשמרו בהצלחה. התוצאות יפורסמו לציבור הדיירים.</p>
+        <div class="lottery-box">
+          <h3>🎁 הגרלה על כרטיסיית אורחים למתחם</h3>
+          <p>על כל 100 משתתפים יוגרל זוכה נוסף. ככל שיותר דיירים ישתתפו — כך יוגרלו יותר כרטיסיות.<br>השאר מייל להשתתפות (לא חובה). המייל נשמר בנפרד מהתשובות.</p>
+          <input type="email" class="lottery-input" id="lottery-email" placeholder="your@email.com">
+          <div class="lottery-note">המייל לא מקושר לתוכן המענה ולא יפורסם</div>
+        </div>
+        <button class="btn btn-next" style="margin-top:14px" onclick="submitLottery()" id="lottery-btn">השתתף בהגרלה</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let currentStep = 0;
+let lang = 'he';
+const answers = {};
+let verifyMode = 'card';
+
+const steps = [
+  'step-0','step-1','step-2','step-3','step-4','step-5',
+  'step-5b','step-6','step-7','step-8',
+  'step-8b','step-9','step-10',
+  'step-10b','step-11','step-12','step-13',
+  'step-13b','step-14',
+  'step-14b','step-15','step-16',
+  'step-16b','step-17','step-18','step-19',
+  'step-done'
+];
+
+const qSteps = ['step-1','step-2','step-3','step-4','step-5','step-6','step-7','step-8','step-9','step-10','step-11','step-12','step-13','step-14','step-15','step-16','step-17','step-18','step-19'];
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(steps[n]).classList.add('active');
+  currentStep = n;
+  const qi = qSteps.indexOf(steps[n]);
+  const pct = n === steps.length-1 ? 100 : qi >= 0 ? Math.round((qi/qSteps.length)*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = n === steps.length-1 ? 'הסקר הושלם!' : qi >= 0 ? 'שאלה '+(qi+1)+' מתוך '+qSteps.length : '';
+  window.scrollTo(0,0);
+}
+
+function nextStep() { if (currentStep < steps.length-1) showStep(currentStep+1); }
+function prevStep() { if (currentStep > 0) showStep(currentStep-1); }
+
+function switchVerify(mode) {
+  verifyMode = mode;
+  document.getElementById('tab-card').classList.toggle('active', mode==='card');
+  document.getElementById('tab-dob').classList.toggle('active', mode==='dob');
+  document.getElementById('field-card').classList.toggle('active', mode==='card');
+  document.getElementById('field-dob').classList.toggle('active', mode==='dob');
+  checkStep1();
+}
+
+function formatDob() {
+  let v = document.getElementById('dob-input').value.replace(/\D/g,'');
+  if (v.length>=3) v = v.substring(0,2)+'/'+v.substring(2);
+  if (v.length>=6) v = v.substring(0,5)+'/'+v.substring(5,9);
+  document.getElementById('dob-input').value = v;
+}
+
+function checkStep1() {
+  const apt = document.getElementById('apt-input').value.trim();
+  let ok = false;
+  if (verifyMode === 'card') ok = document.getElementById('card-input').value.replace(/\D/g,'').length === 6;
+  else ok = /^\d{2}\/\d{2}\/\d{4}$/.test(document.getElementById('dob-input').value);
+  document.getElementById('btn-1').disabled = !(apt.length > 0 && ok);
+  answers['apartment'] = apt;
+}
+
+function selectSingle(el, q) {
+  document.getElementById('opts-'+q).querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers['q'+q] = el.dataset.val;
+  const btn = document.getElementById('btn-'+q);
+  if(btn) btn.disabled = false;
+}
+
+function selectMulti(el, q, max) {
+  const container = document.getElementById('opts-'+q);
+  if(el.classList.contains('selected')) el.classList.remove('selected');
+  else if(container.querySelectorAll('.option.selected').length < max) el.classList.add('selected');
+  const sel = container.querySelectorAll('.option.selected');
+  answers['q'+q] = Array.from(sel).map(o=>o.dataset.val).join(', ');
+  const btn = document.getElementById('btn-'+q);
+  if(btn) btn.disabled = sel.length === 0;
+}
+
+function selectMultiWithOther(el, q, max) {
+  selectMulti(el, q, max);
+  const hasOther = Array.from(document.getElementById('opts-'+q).querySelectorAll('.option.selected')).some(o=>o.dataset.val==='other_proj');
+  document.getElementById('other-proj-wrap').style.display = hasOther ? 'block' : 'none';
+}
+
+function selectMultiUnlimited(el, q) {
+  const container = document.getElementById('opts-'+q);
+  container.querySelectorAll('.option').forEach(o=>{ if(o.dataset.val==='knew_none'||o.dataset.val==='nothing') o.classList.remove('selected'); });
+  el.classList.toggle('selected');
+  const sel = container.querySelectorAll('.option.selected');
+  answers['q'+q] = Array.from(sel).map(o=>o.dataset.val).join(', ');
+  const btn = document.getElementById('btn-'+q);
+  if(btn) btn.disabled = sel.length===0;
+}
+
+function selectOnlyThis(el, q) {
+  document.getElementById('opts-'+q).querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers['q'+q] = el.dataset.val;
+  const btn = document.getElementById('btn-'+q);
+  if(btn) btn.disabled = false;
+  if(q===11) document.getElementById('other-proj-wrap').style.display='none';
+}
+
+let dragSrc = null;
+function initDrag() {
+  document.querySelectorAll('.rank-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragSrc = item; setTimeout(()=>item.classList.add('dragging'),0); });
+    item.addEventListener('dragend', () => { item.classList.remove('dragging'); updateRankNums(); });
+    item.addEventListener('dragover', e => e.preventDefault());
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      if(dragSrc && dragSrc !== item) {
+        const list = item.parentNode;
+        const items = [...list.querySelectorAll('.rank-item')];
+        if(items.indexOf(dragSrc) < items.indexOf(item)) list.insertBefore(dragSrc, item.nextSibling);
+        else list.insertBefore(dragSrc, item);
+        updateRankNums();
+      }
+    });
+  });
+}
+
+function updateRankNums() {
+  document.querySelectorAll('.rank-item').forEach((item,i) => {
+    const n = item.querySelector('.rank-num');
+    n.textContent = i+1;
+    n.style.background = i < 3 ? '#1a6b8a' : '#e0e8f0';
+    n.style.color = i < 3 ? 'white' : '#999';
+  });
+}
+
+function saveRanking() {
+  answers['q7'] = Array.from(document.querySelectorAll('.rank-item')).slice(0,3).map(i=>i.dataset.val).join(', ');
+}
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT699OA5cO5pOYapWUrocKoR6pFlUsKtqoEBdo9iLvU1PzFyINR0gKqIchcSU9FsT_Ug/exec';
+
+function submitSurvey() {
+  saveRanking();
+  const otherText = document.getElementById('other-proj-text').value;
+  if(otherText) answers['q11_other'] = otherText;
+  answers['q18'] = document.getElementById('one-thing').value;
+  answers['q19'] = document.getElementById('open-text').value;
+  answers['timestamp'] = new Date().toISOString();
+  answers['lang'] = lang;
+  answers['verify'] = verifyMode === 'card' ? 'card:'+document.getElementById('card-input').value : 'dob:'+document.getElementById('dob-input').value;
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(answers) }).catch(()=>{});
+  showStep(steps.length-1);
+}
+
+function submitLottery() {
+  const email = document.getElementById('lottery-email').value;
+  if(email) fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ apartment: answers['apartment'], lottery_email: email, timestamp: new Date().toISOString(), type:'lottery' }) }).catch(()=>{});
+  document.getElementById('lottery-btn').textContent = 'נרשמת להגרלה ✓';
+  document.getElementById('lottery-btn').disabled = true;
+}
+
+function setLang(l) { lang = l; document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); }
+
+initDrag();
+showStep(0);
+</script>
+</body>
+</html>
